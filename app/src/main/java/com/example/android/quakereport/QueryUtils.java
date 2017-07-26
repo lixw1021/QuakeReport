@@ -32,7 +32,7 @@ import static com.example.android.quakereport.EarthquakeActivity.LOG_TAG;
  */
 public final class QueryUtils {
 
-//    Fetch data from USGS through HTTP address and creat JSON string
+//   Fetch data from USGS through HTTP address and creat JSON string
 
     private static String makeHttpRequest(URL url) {
         String jsonResponse = "";

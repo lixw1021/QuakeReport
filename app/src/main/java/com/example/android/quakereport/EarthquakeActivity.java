@@ -16,18 +16,14 @@
 package com.example.android.quakereport;
 
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +40,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        // AysncTaskLoader
-        getLoaderManager().initLoader(0, null, this);
-
+        //Define a new loader
+        getLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
@@ -69,11 +64,13 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         } );
     }
 
+    //create a new loader when there is no loader in the loadermanager
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
         return new EarthquakeLoader(this, USGS_REQUEST_URL);
     }
 
+    // called to update UI after loaderInBackground finished
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
         mAdapter.clear();
