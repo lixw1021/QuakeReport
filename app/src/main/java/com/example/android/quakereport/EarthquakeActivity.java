@@ -16,8 +16,11 @@
 package com.example.android.quakereport;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,14 +48,24 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        //Define a new loader
-        getLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
-
-        // Find a reference to the {@link ListView} in the layout
-        ListView earthquakeListView = (ListView) findViewById(R.id.list);
-        emptyTextView = (TextView) findViewById(R.id.empty_view);
         progressBarView = (ProgressBar) findViewById(R.id.progressbar_view);
+        emptyTextView = (TextView) findViewById(R.id.empty_view);
+        ListView earthquakeListView = (ListView) findViewById(R.id.list);
+
         earthquakeListView.setEmptyView(emptyTextView);
+
+        //check network connectivity
+        ConnectivityManager cm =
+                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            //Define a new loader
+            getLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
+
+        } else {
+            progressBarView.setVisibility(View.GONE);
+            emptyTextView.setText(R.string.no_internet);
+        }
 
         // Create a new {@link ArrayAdapter} of earthquakes
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -60,7 +73,6 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(mAdapter);
-
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
