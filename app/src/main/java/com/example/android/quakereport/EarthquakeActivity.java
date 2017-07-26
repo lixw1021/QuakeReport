@@ -24,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
     private EarthquakeAdapter mAdapter;
     private static final int EARTHQUAKE_LOADER_ID = 1;
+    private TextView emptyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
+        emptyTextView = (TextView) findViewById(R.id.empty_view);
+        earthquakeListView.setEmptyView(emptyTextView);
 
         // Create a new {@link ArrayAdapter} of earthquakes
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -73,6 +78,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     // called to update UI after loaderInBackground finished
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        emptyTextView.setText(R.string.no_earthquakes);
         mAdapter.clear();
         if(earthquakes != null && !earthquakes.isEmpty()) {
             mAdapter.addAll(earthquakes);
